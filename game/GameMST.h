@@ -11,6 +11,8 @@ using namespace sf;
 #include "PMissile.h"
 #include "PShip.h"
 
+enum GameStatus {START, PLAYING, DEATH, NEXT, GAMEND, PAUSE};
+
 class GameMST {
 private:
 	PShip playa;
@@ -18,9 +20,42 @@ private:
 	list<AShip> antiSpirals;
 	list<ABomb> lBombs;
 	bool enemyMovingR;
+	GameStatus state;
 public:
 	GameMST(RenderWindow &window) {
 		playa.setShipPos(window);
+		state = START;
+	}
+
+	void updater(RenderWindow &window) {
+		drawAntiSpirals(window);
+		drawMissiles(window);
+		drawBombs(window);
+
+		movePlayer(window);
+		moveMissile();
+		moveEnemy(window);
+		alienShoot();
+		moveBombs();
+		playerDie(window);
+
+		deleteEnemy();
+	}
+
+	void resetGame(RenderWindow &window) {
+		playa.setShipPos(window);
+		plrDrills.clear();
+		antiSpirals.clear();
+		lBombs.clear();
+		createAntispiral(10);
+	}
+
+	GameStatus getState() {
+		return state;
+	}
+
+	void setState(GameStatus s) {
+		state = s;
 	}
 
 	int getRand(int min, int max)
@@ -267,6 +302,30 @@ public:
 			}
 			else
 				iter++;
+		}
+	}
+
+	void playerDie(RenderWindow &window)
+	{
+		list<ABomb>::iterator bombIter;
+		if (!lBombs.empty())
+		{
+			for (bombIter = lBombs.begin(); bombIter != lBombs.end();)
+			{
+				bool bombDeleted = false;
+				if (bombIter->getSprite().getGlobalBounds().intersects(playa.getSprite().getGlobalBounds()))
+				{
+ 					bombIter = lBombs.erase(bombIter);
+					setState(START);
+					resetGame(window);
+					bombDeleted = true;
+					break;
+				}
+				if (!bombDeleted)
+				{
+					bombIter++;
+				}
+			}
 		}
 	}
 };

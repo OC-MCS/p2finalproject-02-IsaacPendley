@@ -27,6 +27,10 @@ public:
 		return player.getPosition();
 	}
 
+	Sprite getSprite() {
+		return player;
+	}
+
 	void moveShip(RenderWindow &window)
 	{
 		const float DISTANCE = 5.0;

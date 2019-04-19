@@ -43,6 +43,9 @@ int main()
 	// Notice we do this *before* going into animation loop.
 	GameMST GM(window);
 	GM.createAntispiral(10);
+	GameUI GUI;
+	GUI.setStartTexture();
+
 	Texture starsTexture;
 	if (!starsTexture.loadFromFile("stars.jpg"))
 	{
@@ -64,7 +67,6 @@ int main()
 		// check all the window's events that were triggered since the last iteration of the loop
 		// For now, we just need this so we can click on the window and close it
 		Event event;
-
 		while (window.pollEvent(event))
 		{
 			// "close requested" event: we close the window
@@ -79,6 +81,21 @@ int main()
 				}
 				
 			}
+			else if (event.type == Event::MouseMoved && Mouse::isButtonPressed(Mouse::Button::Left))
+			{
+				Vector2f mousePos = window.mapPixelToCoords(Mouse::getPosition(window));
+				// check to see if mouse is in the drawing area
+				if (GUI.mouseInStart(mousePos))
+				{
+					// add a shape to the list based on current settings
+					GM.setState(PLAYING);
+				}
+				else if (GUI.mouseInRestart(mousePos))
+				{
+					// add a shape to the list based on current settings
+					GM.setState(PLAYING);
+				}
+			}
 		}
 
 		//===========================================================
@@ -90,17 +107,15 @@ int main()
 		// draw background first, so everything that's drawn later 
 		// will appear on top of background
 		window.draw(background);
-		GM.drawAntiSpirals(window);
-		GM.drawMissiles(window);
-		GM.drawBombs(window);
 
-		GM.movePlayer(window);
-		GM.moveMissile();
-		GM.moveEnemy(window);
-		GM.alienShoot();
-		GM.moveBombs();
-
-		GM.deleteEnemy();
+		if (GM.getState() == START)
+		{
+			GUI.drawStart(window);
+		}
+		if (GM.getState() == PLAYING)
+		{
+			GM.updater(window);
+		}
 		// end the current frame; this makes everything that we have 
 		// already "drawn" actually show up on the screen
 		window.display();
