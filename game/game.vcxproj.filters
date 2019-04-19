@@ -24,4 +24,24 @@
       <Filter>Source Files</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ABomb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AShip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PMissile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PShip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameMST.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>
